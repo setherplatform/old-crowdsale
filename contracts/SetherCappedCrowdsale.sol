@@ -1,6 +1,5 @@
 pragma solidity ^0.4.11;
 
-import "../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./SetherMultiStepCrowdsale.sol";
 
 
@@ -11,7 +10,7 @@ import "./SetherMultiStepCrowdsale.sol";
 contract SetherCappedCrowdsale is SetherMultiStepCrowdsale {
     using SafeMath for uint256;
 
-    uint256 public constant HARD_CAP = 55 * (10 ** 6);
+    uint256 public constant HARD_CAP = 55 * (10 ** 6) * (10 ** 18);
 
     function SetherCappedCrowdsale() {
         

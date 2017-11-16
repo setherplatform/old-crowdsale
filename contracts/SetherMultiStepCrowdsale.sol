@@ -8,14 +8,14 @@ import "./SetherBaseCrowdsale.sol";
  * @dev Multi-step payment policy contract that extends SetherBaseCrowdsale
  */
 contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
-    uint256 public constant PRESALE_LIMIT = 25 * (10 ** 6);
-    uint256 public constant CROWDSALE_LIMIT = 55 * (10 ** 6);
+    uint256 public constant PRESALE_LIMIT = 25 * (10 ** 6) * (10 ** 18);
+    uint256 public constant CROWDSALE_LIMIT = 55 * (10 ** 6) * (10 ** 18);
 
-    uint public constant PRESALE_DISCOUNT1 = 135;
-    uint public constant PRESALE_DISCOUNT2 = 140;
-    uint public constant CROWD_WEEK1_DISCOUNT = 130;
-    uint public constant CROWD_WEEK2_DISCOUNT = 120;
-    uint public constant CROWD_WEEK3_DISCOUNT = 110;
+    uint public constant PRESALE_DISCOUNT1 = 35;
+    uint public constant PRESALE_DISCOUNT2 = 40;
+    uint public constant CROWD_WEEK1_DISCOUNT = 30;
+    uint public constant CROWD_WEEK2_DISCOUNT = 20;
+    uint public constant CROWD_WEEK3_DISCOUNT = 10;
 
     uint256 public limitDatePresale;
     uint256 public limitDateCrowdWeek1;
@@ -67,7 +67,7 @@ contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
 
     function validPurchase() internal constant returns (bool) {
         return super.validPurchase() &&
-            !(isWithinPresaleTimeLimit() && msg.value < presaleDiscountLimit1);
+                 !(isWithinPresaleTimeLimit() && msg.value < presaleDiscountLimit1);
     }
 
     function isWithinTokenAllocLimit(uint256 _tokens) internal returns (bool) {
@@ -76,21 +76,21 @@ contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
     }
 
     function computeTokens(uint256 weiAmount) internal returns (uint256) {
-        uint256 currentRate = rate;
+        uint256 appliedDiscount = 0;
         if (isWithinPresaleTimeLimit()) {
             if (msg.value < presaleDiscountLimit2) {
-                currentRate = rate.mul(PRESALE_DISCOUNT1.div(100));
+                appliedDiscount = PRESALE_DISCOUNT1;
             } else {
-                currentRate = rate.mul(PRESALE_DISCOUNT2.div(100));
+                appliedDiscount = PRESALE_DISCOUNT2;
             }
         } else if (isWithinCrowdWeek1TimeLimit()) {
-            currentRate = rate.mul(CROWD_WEEK1_DISCOUNT.div(100));
+            appliedDiscount = CROWD_WEEK1_DISCOUNT;
         } else if (isWithinCrowdWeek2TimeLimit()) {
-            currentRate = rate.mul(CROWD_WEEK2_DISCOUNT.div(100));
+            appliedDiscount = CROWD_WEEK2_DISCOUNT;
         } else if (isWithinCrowdWeek3TimeLimit()) {
-            currentRate = rate.mul(CROWD_WEEK3_DISCOUNT.div(100));
+            appliedDiscount = CROWD_WEEK3_DISCOUNT;
         }
 
-        return weiAmount.mul(currentRate);
+        return weiAmount.mul(10 ** 5).div(100 - appliedDiscount).div(rate);
     }
 }

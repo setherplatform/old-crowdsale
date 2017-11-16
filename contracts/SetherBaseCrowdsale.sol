@@ -21,7 +21,7 @@ contract SetherBaseCrowdsale {
     // address where funds are collected
     address public wallet;
 
-    // how many token units a buyer gets per wei
+    // how many wei * 10 ** 15 per token
     uint256 public rate;
 
     // amount of raised money in wei
@@ -39,7 +39,6 @@ contract SetherBaseCrowdsale {
     function SetherBaseCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) {
         require(_startTime >= now);
         require(_endTime >= _startTime);
-        require(_rate > 0);
         require(_wallet != address(0));
 
         token = createTokenContract();
@@ -95,14 +94,12 @@ contract SetherBaseCrowdsale {
     
     //Override this method with token distribution strategy
     function computeTokens(uint256 weiAmount) internal returns (uint256) {
-        //To be ovveriden
-        return 0;
+        //To be overriden
     }
 
     //Override this method with token limitation strategy
     function isWithinTokenAllocLimit(uint256 _tokens) internal returns (bool) {
-        //To be ovveriden
-        return false;
+        //To be overriden
     }
     
     // creates the token to be sold.

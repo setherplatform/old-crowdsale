@@ -1,6 +1,5 @@
 pragma solidity ^0.4.11;
 
-import "./SetherToken.sol";
 import "./SetherCappedCrowdsale.sol";
 import "./SetherFinalizableCrowdsale.sol";
 
@@ -24,7 +23,7 @@ contract SetherCrowdsale is SetherCappedCrowdsale, SetherFinalizableCrowdsale {
         require(_limitDateCrowdWeek1 > _limitDatePresale);
         require(_limitDateCrowdWeek2 > _limitDateCrowdWeek1);
         require(_limitDateCrowdWeek3 > _limitDateCrowdWeek2);
-
+   
     }
 
     function finalization() internal {
