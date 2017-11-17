@@ -21,7 +21,7 @@ contract SetherBaseCrowdsale {
     // address where funds are collected
     address public wallet;
 
-    // how many wei * 10 ** 15 per token
+    // how many finney per token
     uint256 public rate;
 
     // amount of raised money in wei
@@ -34,16 +34,13 @@ contract SetherBaseCrowdsale {
     * @param value weis paid for purchase
     * @param amount amount of tokens purchased
     */
-    event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
+    event SethTokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
-    function SetherBaseCrowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) {
-        require(_startTime >= now);
-        require(_endTime >= _startTime);
+    function SetherBaseCrowdsale(uint256 _rate, address _wallet) {
+        require(_rate > 0);
         require(_wallet != address(0));
 
         token = createTokenContract();
-        startTime = _startTime;
-        endTime = _endTime;
         rate = _rate;
         wallet = _wallet;
     }
@@ -70,7 +67,7 @@ contract SetherBaseCrowdsale {
 
         token.mint(beneficiary, tokens);
 
-        TokenPurchase(msg.sender, beneficiary, weiAmount, tokens);
+        SethTokenPurchase(msg.sender, beneficiary, weiAmount, tokens);
 
         forwardFunds();
     }
@@ -78,6 +75,11 @@ contract SetherBaseCrowdsale {
     // @return true if crowdsale event has ended
     function hasEnded() public constant returns (bool) {
         return now > endTime;
+    }
+
+    // @return true if crowdsale event has started
+    function hasStarted() public constant returns (bool) {
+        return now < startTime;
     }
 
     // send ether to the fund collection wallet

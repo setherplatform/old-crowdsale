@@ -14,7 +14,7 @@ contract SetherFinalizableCrowdsale is SetherBaseCrowdsale, Ownable {
 
   bool public isFinalized = false;
 
-  event Finalized();
+  event SetherFinalized();
 
   /**
    * @dev Must be called after crowdsale ends, to do some extra finalization
@@ -25,7 +25,7 @@ contract SetherFinalizableCrowdsale is SetherBaseCrowdsale, Ownable {
     require(hasEnded());
 
     finalization();
-    Finalized();
+    SetherFinalized();
 
     isFinalized = true;
   }
