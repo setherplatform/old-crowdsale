@@ -34,6 +34,12 @@ Read more about [OpenZeppelin](https://openzeppelin.org/).
 $ npm install
 ```
 
+### Admin dashboard
+
+```
+$ npm run dev
+```
+
 ### Documentation
 
 Please see the [Sether ICO site](http://sether.io) for the whitepaper and for ICO launch details. 

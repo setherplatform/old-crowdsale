@@ -1,0 +1,31 @@
+body {
+    margin: 50px !important;
+}
+
+.no-margin {
+    margin: 0px !important;
+}
+
+.float-right {
+    float: right;
+}
+
+.row {
+    margin: 0px;
+}
+
+.small-bottom {
+    margin-bottom: 3px !important;
+}
+
+.well {
+    margin: 10px !important;
+}
+
+.time {
+    font-weight: bold; 
+}
+
+.highligh {
+    background-color: antiquewhite;
+}

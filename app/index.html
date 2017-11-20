@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sether Dashboard</title>
+  <script src="./app.js"></script>
+</head>
+  <body>
+    <div class="panel panel-default">
+      <div class="panel-heading"><h2>Sether Dashboard</h2></div>
+      <div class="panel-body">
+          <div class="row well small-bottom">
+            <div class="col-md-6">
+              <h3 class="no-margin">Crowdsale status: 
+                <span id="stat-not-started" class="label label-default">Never started</span>
+                <span id="stat-in-progress" class="label label-success">In progress</span>
+                <span id="stat-not-finalized" class="label label-warning">Not finalized</span>
+                <span id="stat-finalized" class="label label-danger">Finalized</span>
+              </h3>
+            </div>
+            <div class="col-md-6">
+                <button id="btn-start" type="button" class="btn btn-lg btn-success float-right">Start crowdsale</button>
+                <button id="btn-end" type="button" class="btn btn-lg btn-danger float-right">Finalize crowdsale</button>
+            </div>
+          </div>
+          <div class="well">
+            <div class="row highligh no-margin">
+                <div class="col-md-4">
+                    <h4 class="no-margin">Start time: <span id="time-start" class="time"></span></h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="no-margin">Presale ends: <span id="time-presale" class="time"></span></h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="no-margin">End time: <span id="time-end" class="time"></span></h4>
+                </div>
+            </div>
+            <div class="row no-margin">
+                <div class="col-md-4">
+                    <h4 class="no-margin">CS week1 ends: <span id="time-cs1" class="time"></span></h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="no-margin">CS week2 ends: <span id="time-cs2" class="time"></span></h4>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="no-margin">CS week3 ends: <span id="time-cs3" class="time"></span></h4>
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              
+            </div>
+          </div>
+      </div>
+    </div>
+    
+  </body>
+</html>
