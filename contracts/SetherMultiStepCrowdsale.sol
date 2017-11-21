@@ -13,11 +13,16 @@ contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
     
     uint256 public constant PRESALE_BONUS_LIMIT = 1 * (10 ** 18);
 
-    uint public constant PRESALE_PERIOD = 1 minutes;
-    uint public constant CROWD_WEEK1_PERIOD = 1 minutes;
-    uint public constant CROWD_WEEK2_PERIOD = 1 minutes;
-    uint public constant CROWD_WEEK3_PERIOD = 1 minutes;
-    uint public constant CROWD_WEEK4_PERIOD = 1 minutes;
+    // Presale period (includes holidays)
+    uint public constant PRESALE_PERIOD = 52 days;
+    // Crowdsale first week period (constants for proper testing)
+    uint public constant CROWD_WEEK1_PERIOD = 7 days;
+    // Crowdsale second week period
+    uint public constant CROWD_WEEK2_PERIOD = 7 days;
+    //Crowdsale third week period
+    uint public constant CROWD_WEEK3_PERIOD = 7 days;
+    //Crowdsale last week period
+    uint public constant CROWD_WEEK4_PERIOD = 7 days;
 
     uint public constant PRESALE_BONUS = 40;
     uint public constant CROWD_WEEK1_BONUS = 25;
