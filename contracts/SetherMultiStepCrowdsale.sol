@@ -11,19 +11,15 @@ contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
     uint256 public constant PRESALE_LIMIT = 25 * (10 ** 6) * (10 ** 18);
     uint256 public constant CROWDSALE_LIMIT = 55 * (10 ** 6) * (10 ** 18);
     
-    uint256 public constant PRESALE_BONUS1_LIMIT = 1 * (10 ** 18);
-    uint256 public constant PRESALE_BONUS2_LIMIT = 10 * (10 ** 18);
-    uint256 public constant PRESALE_BONUS3_LIMIT = 20 * (10 ** 18);
+    uint256 public constant PRESALE_BONUS_LIMIT = 1 * (10 ** 18);
 
-    uint public constant PRESALE_PERIOD = 42 days;
-    uint public constant CROWD_WEEK1_PERIOD = 7 days;
-    uint public constant CROWD_WEEK2_PERIOD = 7 days;
-    uint public constant CROWD_WEEK3_PERIOD = 7 days;
-    uint public constant CROWD_WEEK4_PERIOD = 7 days;
+    uint public constant PRESALE_PERIOD = 1 minutes;
+    uint public constant CROWD_WEEK1_PERIOD = 1 minutes;
+    uint public constant CROWD_WEEK2_PERIOD = 1 minutes;
+    uint public constant CROWD_WEEK3_PERIOD = 1 minutes;
+    uint public constant CROWD_WEEK4_PERIOD = 1 minutes;
 
-    uint public constant PRESALE_BONUS1 = 30;
-    uint public constant PRESALE_BONUS2 = 35;
-    uint public constant PRESALE_BONUS3 = 40;
+    uint public constant PRESALE_BONUS = 40;
     uint public constant CROWD_WEEK1_BONUS = 25;
     uint public constant CROWD_WEEK2_BONUS = 20;
     uint public constant CROWD_WEEK3_BONUS = 10;
@@ -67,7 +63,7 @@ contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
 
     function validPurchase() internal constant returns (bool) {
         return super.validPurchase() &&
-                 !(isWithinPresaleTimeLimit() && msg.value < PRESALE_BONUS1_LIMIT);
+                 !(isWithinPresaleTimeLimit() && msg.value < PRESALE_BONUS_LIMIT);
     }
 
     function isWithinTokenAllocLimit(uint256 _tokens) internal returns (bool) {
@@ -78,13 +74,7 @@ contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
     function computeTokens(uint256 weiAmount) internal returns (uint256) {
         uint256 appliedBonus = 0;
         if (isWithinPresaleTimeLimit()) {
-            if (msg.value < PRESALE_BONUS2_LIMIT) {
-                appliedBonus = PRESALE_BONUS1;
-            } else if (msg.value < PRESALE_BONUS3_LIMIT) {
-                appliedBonus = PRESALE_BONUS2;
-            } else {
-                appliedBonus = PRESALE_BONUS3;
-            }
+            appliedBonus = PRESALE_BONUS;
         } else if (isWithinCrowdWeek1TimeLimit()) {
             appliedBonus = CROWD_WEEK1_BONUS;
         } else if (isWithinCrowdWeek2TimeLimit()) {
