@@ -2,6 +2,17 @@ body {
     margin: 50px !important;
 }
 
+.glyphicon-refresh-animate {
+    -animation: spin 1.2s infinite linear;
+    -webkit-animation: spin2 1.2s infinite linear;
+    font-size: 40px;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
 .no-margin {
     margin: 0px !important;
 }
@@ -28,4 +39,18 @@ body {
 
 .highligh {
     background-color: antiquewhite;
+}
+
+.refresh {
+    font-size: 30px;
+    cursor: pointer;
+    top: -40px !important;
+}
+
+.highligh-green {
+    background-color: lightgreen;
+}
+
+.buyload {
+    font-size: 20px;
 }
