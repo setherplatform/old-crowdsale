@@ -6,9 +6,15 @@ import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 
 import sether_artifacts from '../../build/contracts/SetherCrowdsale.json'
+import sether_token_artifacts from '../../build/contracts/SetherToken.json'
 var dateFormat = require('dateformat');
 
 var SetherCrowdsale = contract(sether_artifacts);
+var SetherToken = contract(sether_token_artifacts);
+
+var centralWallet;
+var ownerWallet;
+var defaultBuyer = '0xcc9385f23923b2206248ab24cba5ddf94bff4d4c';
 
 window.App = {
   start: function() {
@@ -23,7 +29,8 @@ window.App = {
     $('#alert-success-div').hide();
     $('#deploy-panel').hide();
     $('#buying-span').hide();
-
+    $('#defaultBuyer').html(defaultBuyer);
+    
     self.setStatus();
   },
 
@@ -59,11 +66,15 @@ window.App = {
 
       var _value = $('#amount').val() * Math.pow(10,18);
       var account = $('#account').val();
+      var beneficiary = $('#beneficiary').val();
       if (!account || account == '') {
-        account = '0xcc9385f23923b2206248ab24cba5ddf94bff4d4c';
+        account = defaultBuyer;
       }
-      console.log('Buying from account: '+account+' with value: '+_value);
-      return contract.buyTokens(account, {from: account, value: _value});
+      if (!beneficiary || beneficiary == '') {
+        beneficiary = account;
+      }
+      console.log('Buying from account: '+account+' with value: '+_value+' for beneficiary: '+beneficiary);
+      return contract.buyTokens(beneficiary, {from: account, value: _value});
     }).then(function(result) {
       console.log(result.receipt.status);
       $('#buying-span').hide();
@@ -82,6 +93,53 @@ window.App = {
       $('#buying-span').hide();
       $('#btn-buy').show();
 
+      $('#alert-error').html(e.message);
+      $('#alert-error-div').show();
+    });
+  },
+
+  verifyEth: function() {
+    console.log('Verify ETH');
+    var self = this;
+
+    var contract;
+    SetherCrowdsale.deployed().then(function(instance) {
+      contract = instance;
+
+      $('#alert-error-div').hide();
+      $('#alert-success-div').hide();
+
+      var account = $('#account-ve').val();
+      web3.eth.getBalance(account, function(error, result) {
+        $('#res-ve').html(web3.fromWei(result.toLocaleString())+' ETH');
+      });
+
+    }).catch(function(e) {
+      console.log(e.message);
+      $('#alert-error').html(e.message);
+      $('#alert-error-div').show();
+    });
+  },
+
+  verifySeth: function() {
+    console.log('Verify SETH');
+    var self = this;
+
+    var contract;
+    SetherCrowdsale.deployed().then(function(instance) {
+      contract = instance;
+
+      $('#alert-error-div').hide();
+      $('#alert-success-div').hide();
+
+      var tokenContract = web3.eth.contract(SetherToken.abi).at($('#taddress').html());
+      var account = $('#account-vs').val();
+      tokenContract.balanceOf(account, function(error, result) {
+        $('#res-vs').html(web3.fromWei(result.toLocaleString())+' SETH');
+      });
+
+    }).catch(function(e) {
+      console.log(e.message);
       $('#alert-error').html(e.message);
       $('#alert-error-div').show();
     });
@@ -192,6 +250,43 @@ window.App = {
     });
   },
 
+  getTransactionsByAccount: function(myaccount, startBlockNumber) {
+    web3.eth.getBlockNumber(function(error, result){
+      var endBlockNumber = result;
+      if (startBlockNumber == null) {
+        startBlockNumber = endBlockNumber - 1000;
+        console.log("Using startBlockNumber: " + startBlockNumber);
+      }
+      console.log("Searching for transactions to account \"" + myaccount + "\" within blocks "  + startBlockNumber + " and " + endBlockNumber);
+      
+      var idx=0;
+      var tokenContract = web3.eth.contract(SetherToken.abi).at($('#taddress').html());
+      var share = {};
+      for (var i = startBlockNumber; i <= endBlockNumber; i++) {
+        web3.eth.getBlock(i, true, function(e, block) {
+          if (block != null && block.transactions != null) {
+            block.transactions.forEach( function(e) {
+              if (myaccount == "*" || myaccount == e.to) {
+                  idx++;
+                  var _html = $('#tr-table').html();
+                  _html = '<tr><th scope="row">'+idx+'</th><td>'+e.from+'</td><td>'+web3.fromWei(e.value)+' ETH</td></tr>' + _html;
+                  $('#tr-table').html(_html);
+
+                  tokenContract.balanceOf(e.from, function(error, result) {
+                    var _html = $('#sh-table').html();
+                    if (_html.indexOf(e.from) < 0) {
+                      _html = '<tr><td>'+e.from+'</td><td>'+web3.fromWei(result.toLocaleString())+' SETH</td></tr>' + _html;
+                    }
+                    $('#sh-table').html(_html);
+                  });
+              }
+            })
+          }
+        });
+      }
+    });
+  },
+
   setStatus: function() {
     var self = this;
 
@@ -203,11 +298,29 @@ window.App = {
     $("#btn-end").hide();
 
     var contract;
+    var tokenContract;
     var started = false;
     var finalized = false;
+    var tokenAddress;
     console.log("Loading contract status");
     SetherCrowdsale.deployed().then(function(instance) {
       contract = instance;
+
+      
+
+      var events = contract.SethTokenPurchase();
+      events.watch(function(error, event) {
+        if (!error) {
+          console.log(event.args.beneficiary+' '+event.args.value);
+          var _html = $('#events-holder').html();
+          _html = ' <div class="alert alert-warning alert-dismissible" role="alert">'+
+                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                  '<strong>SethTokenPurchase&nbsp;</strong>'+event.args.beneficiary+' : '+web3.fromWei(event.args.value.toLocaleString())+' ETH</div>' 
+                  + _html;
+          $('#events-holder').html(_html);
+        }
+      });
+
       return contract.isStarted.call();
     }).then(function(isStarted) {
       started = isStarted;
@@ -281,18 +394,41 @@ window.App = {
       return contract.token.call();
     }).then(function(tadd) {
       $('#taddress').html(tadd);
+      tokenAddress = tadd;
       return contract.wallet.call();
     }).then(function(wall) {
       $('#cwallet').html(wall);
+      centralWallet = wall;
       return contract.rate.call();
     }).then(function(rate) {
       $('#rate').html(rate.toLocaleString());
       return contract.owner.call();
     }).then(function(oadd) {
       $('#oaddress').html(oadd);
+      ownerWallet = oadd;
       return contract.weiRaised.call();
     }).then(function(wei) {
-      $('#ethraised').html(web3.fromWei(wei.toLocaleString()));
+      $('#ethraised').html(web3.fromWei(wei.toLocaleString())+' ETH');
+      tokenContract = web3.eth.contract(SetherToken.abi).at(tokenAddress);
+      tokenContract.totalSupply.call(function(error, result) {
+        $('#minted').html(web3.fromWei(result.toLocaleString())+' SETH');
+      });
+      web3.eth.getBalance(centralWallet, function(error, result) {
+        $('#ethcentral').html(web3.fromWei(result.toLocaleString())+' ETH');
+      });
+      web3.eth.getBalance(ownerWallet, function(error, result) {
+        $('#ethowner').html(web3.fromWei(result.toLocaleString())+' ETH');
+      });
+      tokenContract.balanceOf(centralWallet, function(error, result) {
+        $('#sethcentral').html(web3.fromWei(result.toLocaleString())+' SETH');
+      });
+      web3.eth.getBalance(defaultBuyer, function(error, result) {
+        $('#ethdefault').html(web3.fromWei(result.toLocaleString())+' ETH');
+      });
+      tokenContract.balanceOf(defaultBuyer, function(error, result) {
+        $('#sethdefault').html(web3.fromWei(result.toLocaleString())+' SETH');
+      });
+      self.getTransactionsByAccount(contract.address);
     }).catch(function(e) {
       console.log(e);
       $('#alert-error').html(e.message);

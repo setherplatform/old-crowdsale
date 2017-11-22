@@ -1,5 +1,9 @@
 body {
-    margin: 50px !important;
+    margin: 5px 50px 0px 50px !important;
+}
+
+hr {
+    margin: 0px !important;
 }
 
 .glyphicon-refresh-animate {
@@ -53,4 +57,20 @@ body {
 
 .buyload {
     font-size: 20px;
+}
+
+.nwide {
+    width: 90%;
+}
+
+.vres {
+    margin-top: 30px;
+}
+
+.border-right {
+    border-right: 1px solid black;
+}
+
+.border-left {
+    border-left: 1px solid black;
 }
