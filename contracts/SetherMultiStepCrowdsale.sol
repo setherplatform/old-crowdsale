@@ -11,7 +11,7 @@ contract SetherMultiStepCrowdsale is SetherBaseCrowdsale {
     uint256 public constant PRESALE_LIMIT = 25 * (10 ** 6) * (10 ** 18);
     uint256 public constant CROWDSALE_LIMIT = 55 * (10 ** 6) * (10 ** 18);
     
-    uint256 public constant PRESALE_BONUS_LIMIT = 1 * (10 ** 18);
+    uint256 public constant PRESALE_BONUS_LIMIT = 1 * (10 ** 17);
 
     // Presale period (includes holidays)
     uint public constant PRESALE_PERIOD = 52 days;
