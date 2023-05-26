@@ -9,13 +9,11 @@ The SETH token is a standard ERC20 token that can be used by multiple wallets an
 trading platforms.
 The token will be used as the only currency for interacting with the Sether platform.
 
-# ICO
-
+# Crowdsale
 This is the official project for SETH token and crowdsale smart contracts.
 
 
 ### Development
-
 Sether smart contracts use truffle and open zeppelin frameworks.
 In order to compile and deploy the contracts you need to install truffle first.
 
