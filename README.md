@@ -38,10 +38,6 @@ $ npm install
 $ npm run dev
 ```
 
-### Documentation
-
-Please see the [Sether ICO site](http://sether.io) for the whitepaper and for ICO launch details. 
-
 ### Contributing
 
 We are open to suggestions about the smart contracts code. If you find any issues you can contact us at: contact@sether.io
